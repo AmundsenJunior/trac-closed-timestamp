@@ -1,0 +1,29 @@
+# In trac.ini, add the closed_timestamp custom field
+[ticket-custom]
+closed_timestamp = text
+closed_timestamp.label = Closed Timestamp
+closed_timestamp.format = wiki
+
+# Enter Trac DB for running SQL query
+$ su www-data
+$ sqlite3 /var/www/trac/db/trac.db
+sqlite
+	> INSERT INTO ticket_custom
+    > (ticket, name, value)
+    > SELECT
+    > id AS ticket,
+    > 'closed_timestamp' AS name,
+    > ' ' AS value
+    > FROM ticket
+    > WHERE id NOT IN (
+    > SELECT ticket FROM ticket_custom WHERE name = 'closed_timestamp'
+    > );
+
+# Confirm that all records have been updated with closed_timestamp records in trac.db
+sqlite
+	> SELECT * FROM ticket_custom
+    > WHERE name = 'closed_timestamp'
+    > ORDER BY ticket
+    > ;
+
+    > .exit

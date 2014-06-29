@@ -1,0 +1,4 @@
+$ su -c ‘crontab -u www-data -e’ www-data  
+
+# Run /var/www/trac/data/closed_tickets_update.py at top of the hour every weekday 
+0 * * * 1-5 python /var/www/trac/data/closed_tickets_update.py
